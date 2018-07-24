@@ -3,17 +3,20 @@ import sys
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.io.wavfile import read
+import soundfile as sf
 import matplotlib.pyplot as plt
+
+import moviepy.editor as mp
 
 def main():
     sound_name = input_filename("Input sound file name. > ")
     sound_file = wav_import(sound_name)
     movie_name = input_filename("Input movie file name. > ")
-    movie_file = mp4towav(movie_name)
+    mp4towav(movie_name)
+    movie_file = wav_import("audio.wav")
 
-    corr,estimated_delay = cross_correlation(sound_file1,sound_file2)
-    wav_prot(sound_file1,sound_file2,corr,estimated_delay)
+    corr,estimated_delay = cross_correlation(sound_file,movie_file)
+    wav_prot(sound_file,movie_file,corr,estimated_delay)
 
 # ファイル名を取得，存在するファイル名を入力するまで聞き返す
 def input_filename(sentence_to_display):
@@ -29,23 +32,21 @@ def input_filename(sentence_to_display):
 
 #wavファイル読み込み
 def wav_import(filename):
-    fs, data = read(filename)
+    data,fs = sf.read(filename)
 
     print ("Sampling rate :", fs)
 
     if (data.shape[1] == 2):
         left = data[:, 0]
         right = data[:, 1]
+        return left
+    else:
+        return data
 
-    return left
-
+#mp4動画ファイルをwavファイルに変換する
 def mp4towav(filename):
-    clip_input = mp.VideoFileClip(self.input_video).subclip()
-    clip_input.audio.write_audiofile('audio.mp3')
-    sound_file = wav_import('audio.mp3')
-
-    return sound_file
-
+    clip_input = mp.VideoFileClip(filename).subclip()
+    clip_input.audio.write_audiofile('audio.wav')
 
 
 #相互相関をとって遅延時間を算出
