@@ -7,10 +7,10 @@ from scipy.io.wavfile import read
 import matplotlib.pyplot as plt
 
 def main():
-    sound_name1 = input_filename("Input sound file name. > ")
-    sound_file1 = wav_import(sound_name1)
-    sound_name2 = input_filename("Input sound file name. > ")
-    sound_file2 = wav_import(sound_name2)
+    sound_name = input_filename("Input sound file name. > ")
+    sound_file = wav_import(sound_name)
+    movie_name = input_filename("Input movie file name. > ")
+    movie_file = mp4towav(movie_name)
 
     corr,estimated_delay = cross_correlation(sound_file1,sound_file2)
     wav_prot(sound_file1,sound_file2,corr,estimated_delay)
@@ -38,6 +38,13 @@ def wav_import(filename):
         right = data[:, 1]
 
     return left
+
+def mp4towav(filename):
+    clip_input = mp.VideoFileClip(self.input_video).subclip()
+    clip_input.audio.write_audiofile('audio.mp3')
+    sound_file = wav_import('audio.mp3')
+
+    return sound_file
 
 
 
